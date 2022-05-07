@@ -1,0 +1,22 @@
+{
+  "name": "cap4-realtime-2",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@vaadin/router": "^1.7.4",
+    "nodemon": "^2.0.16",
+    "parcel": "^2.5.0"
+  },
+  "scripts": {
+    "dev-parcel": "parcel serve ./client/index.html",
+    "dev": "cross-env nodemon --watch './server/index.ts' --exec 'ts-node ./server/index.ts'"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "firebase": "8.7.1",
+    "firebase-admin": "^10.2.0",
+    "uuid": "^8.3.2"
+  }
+}
