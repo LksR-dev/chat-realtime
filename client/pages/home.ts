@@ -25,7 +25,7 @@ class Home extends HTMLElement {
     homeDiv.classList.add("container");
 
     homeDiv.innerHTML = `
-      <h1>hola</h1>
+      <text-custom weight="bold" size="30px">WhatsGram</text-custom>
 
       <login-form></login-form>
     `;
