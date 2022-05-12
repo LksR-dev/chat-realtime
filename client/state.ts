@@ -1,5 +1,4 @@
-import { realtimeDB } from "./rtdb";
-import { Router } from "@vaadin/router";
+import { rtdb } from "./rtdb";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -44,6 +43,10 @@ const state = {
     const cs = this.getState();
     cs.rtdbRoomId = longId;
     this.setState(cs);
+  },
+
+  listenRoom(idRoom) {
+    const chatRoomRef = rtdb.ref(`/rooms/${idRoom}`);
   },
 
   // CREATEUSER NOS DEVUELVE EL ID DEL USUARIO
@@ -104,6 +107,7 @@ const state = {
         return res;
       });
   },
+
   setState(newState) {
     this.data = newState;
     for (const cb of this.listeners) {

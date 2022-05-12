@@ -22,7 +22,7 @@ class Login extends HTMLElement {
         idContainer.innerHTML = `
           <label class="label" type="text" name="id">
             <text-custom weight="500" size="20px">Ingrese el ID de la sala:</text-custom>
-            <input class="input" type="text" name="id" placeholder="7CE24">
+            <input class="input" type="text" name="id" placeholder="1400">
           </label>
         `;
       }
@@ -44,7 +44,6 @@ class Login extends HTMLElement {
 
             const authUser = state.getAuth(userEmail);
             authUser.then(id => {
-              // SI EL EMAIL DEL USUARIO NO EXISTE, CREA UN USUARIO NUEVO
               if (!id.id) {
                 const newUser = state.createUser(userName, userEmail);
                 newUser.then(userId => {
@@ -53,8 +52,8 @@ class Login extends HTMLElement {
 
                     const newRoom = state.createRoom(newUserId);
                     newRoom.then(roomId => {
-                      state.setRoomId(roomId.id);
                       const newRoomId = roomId.id;
+                      state.setRoomId(newRoomId);
 
                       const connectToRoom = state.connectToRoom(
                         newRoomId,
@@ -62,11 +61,13 @@ class Login extends HTMLElement {
                       );
                       connectToRoom.then(data => {
                         state.setLongRoomId(data.rtdbId);
+                        state.listenRoom(data.rtdbId);
                       });
                     });
                   }
                 });
               } else {
+                // ELSE DEL AUTH
                 return id.id;
               }
             });

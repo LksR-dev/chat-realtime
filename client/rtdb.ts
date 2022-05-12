@@ -6,6 +6,6 @@ const app = firebase.initializeApp({
   databaseURL: "https://dwf-m6-6b33e-default-rtdb.firebaseio.com/",
 });
 
-const realtimeDB = firebase.database();
+const rtdb = firebase.database();
 
-export { realtimeDB };
+export { rtdb };

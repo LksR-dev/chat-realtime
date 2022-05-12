@@ -6,8 +6,7 @@
   "devDependencies": {
     "@vaadin/router": "^1.7.4",
     "nodemon": "^2.0.16",
-    "parcel": "^2.5.0",
-    "process": "^0.11.10"
+    "parcel": "^2.5.0"
   },
   "scripts": {
     "dev-parcel": "parcel serve ./client/index.html",
