@@ -36,45 +36,15 @@ class Login extends HTMLElement {
       const select = target.select.value;
       const idRoomInput = target.id.value;
 
+      //TODO: GUARDAR LOS DATOS EN EL STATE
       if (userEmail !== "" && userName !== "") {
         if (select == "newRoom") {
-          if (idRoomInput !== "") {
-            state.setName(userName);
-            state.setEmail(userEmail);
-
-            const authUser = state.getAuth(userEmail);
-            authUser.then(id => {
-              if (!id.id) {
-                const newUser = state.createUser(userName, userEmail);
-                newUser.then(userId => {
-                  if (userId.id) {
-                    const newUserId = userId.id;
-
-                    const newRoom = state.createRoom(newUserId);
-                    newRoom.then(roomId => {
-                      const newRoomId = roomId.id;
-                      state.setRoomId(newRoomId);
-
-                      const connectToRoom = state.connectToRoom(
-                        newRoomId,
-                        newUserId
-                      );
-                      connectToRoom.then(data => {
-                        state.setLongRoomId(data.rtdbId);
-                        state.listenRoom(data.rtdbId);
-                      });
-                    });
-                  }
-                });
-              } else {
-                // ELSE DEL AUTH
-                return id.id;
-              }
-            });
-          }
+          state.setEmailAndName(userEmail, userName);
+          state.createUser();
+          state.createRoom();
         }
       } else {
-        alert("Debes llenar todos los campos");
+        alert("Debes completar todos los campos");
       }
     });
   }

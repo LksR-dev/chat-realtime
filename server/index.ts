@@ -62,6 +62,11 @@ app.post("/auth", (req, res) => {
 });
 
 // CREATE ROOM
+// SETEAMOS COMO PROPIETARIO DE LA SALA EN LA RTDB: EL ID DEL USUARIO
+// Y EN LA ROOMSCOLL DE FIRESTORE: CREAMOS UN ID CORTO PARA EL DOCUMENTO
+// Y DENTRO DE ESE DOCUMENTO GUARDAMOS: EL ID LARGO DE LA RTDB
+// ESTO NOS VA A SERVIR PARA QUE LUEGO DESDE FIRESTORE AL OBTENER EL RTDBID QUE HAY DENTRO DE n SALA
+// CON ESE RTDBID OBTENDREMOS EL PROPIETARIO DE LA SALA EN LA RTDB, ES DECIR, EL USERID DE LA USERSCOLL EN FIRESTORE
 app.post("/rooms", (req, res) => {
   const { userId } = req.body;
 
@@ -71,6 +76,7 @@ app.post("/rooms", (req, res) => {
     .then(doc => {
       if (doc.exists) {
         const roomRef = rtdb.ref("/rooms/" + nanoid());
+
         roomRef
           .set({
             messages: [{ from: "", message: "" }],
@@ -99,8 +105,6 @@ app.post("/rooms", (req, res) => {
 app.get("/rooms/:roomId", (req, res) => {
   const { roomId } = req.params;
   const { userId } = req.query;
-
-  console.log(roomId, userId);
 
   userColl
     .doc(userId.toString())

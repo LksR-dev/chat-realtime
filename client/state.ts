@@ -1,4 +1,5 @@
 import { rtdb } from "./rtdb";
+import { map } from "lodash";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -7,10 +8,12 @@ type Messages = {
   message: string;
 };
 
+//TODO: CAMBIAR LOS FETCH PARA QUE LA DATA SE MANEJE DESDE AQUÍ
 const state = {
   data: {
-    nombre: null,
+    name: null,
     email: null,
+    userId: null,
     roomId: null,
     rtdbRoomId: null,
     messages: [],
@@ -21,15 +24,16 @@ const state = {
     return this.data;
   },
 
-  setName(name) {
+  setEmailAndName(email, name) {
     const cs = this.getState();
-    cs.nombre = name;
+    cs.email = email;
+    cs.name = name;
     this.setState(cs);
   },
 
-  setEmail(email) {
+  setUserId(userId) {
     const cs = this.getState();
-    cs.email = email;
+    cs.userId = userId;
     this.setState(cs);
   },
 
@@ -47,23 +51,36 @@ const state = {
 
   listenRoom(idRoom) {
     const chatRoomRef = rtdb.ref(`/rooms/${idRoom}`);
+    chatRoomRef.on("value", snapshot => {
+      const cs = this.getState();
+      const messagesFromServer = snapshot.val();
+      const messagesList = map(messagesFromServer.messages);
+      cs.messages = messagesList;
+      this.setState(cs);
+    });
   },
 
   // CREATEUSER NOS DEVUELVE EL ID DEL USUARIO
-  createUser(name, email) {
-    return fetch(`${API_BASE_URL}/signup`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, email }),
-    })
-      .then(data => {
-        return data.json();
+  createUser() {
+    const cs = this.getState();
+    if (cs.email) {
+      fetch(`${API_BASE_URL}/signup`, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: cs.name, email: cs.email }),
       })
-      .then(res => {
-        return res;
-      });
+        .then(data => {
+          return data.json();
+        })
+        .then(res => {
+          cs.userId = res.id;
+          this.setState(cs);
+        });
+    } else {
+      alert("Debes colocar un mail.");
+    }
   },
   // AUTENTICA EL EMAIL Y RETORNA EL ID DEL USUARIO
   getAuth(email) {
@@ -82,22 +99,25 @@ const state = {
       });
   },
 
-  createRoom(userId) {
-    return fetch(`${API_BASE_URL}/rooms`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId }),
-    })
-      .then(data => {
-        return data.json();
+  createRoom() {
+    const cs = this.getState();
+    if (cs.userId) {
+      fetch(`${API_BASE_URL}/rooms`, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: cs.userId }),
       })
-      .then(res => {
-        return res;
-      });
+        .then(data => {
+          return data.json();
+        })
+        .then(res => {
+          cs.roomId = res.id;
+          this.setState(cs);
+        });
+    }
   },
-
   connectToRoom(roomId, userId) {
     return fetch(`${API_BASE_URL}/rooms/${roomId}?userId=${userId}`)
       .then(data => {
@@ -106,6 +126,20 @@ const state = {
       .then(res => {
         return res;
       });
+  },
+
+  pushMessages(message: string) {
+    const cs = this.getState();
+    fetch(`${API_BASE_URL}/messages`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: cs.name,
+        message: message,
+      }),
+    });
   },
 
   setState(newState) {
