@@ -11,7 +11,7 @@ app.use(cors());
 const userColl = firestore.collection("users");
 const roomsColl = firestore.collection("rooms");
 
-// CREAMOS EL USUARIO
+// CREAMOS EL USUARIO DEVOLVIENDO SU IDDOC
 app.post("/signup", (req, res) => {
   const { name } = req.body;
   const { email } = req.body;
@@ -101,7 +101,6 @@ app.post("/rooms", (req, res) => {
       }
     });
 });
-
 app.get("/rooms/:roomId", (req, res) => {
   const { roomId } = req.params;
   const { userId } = req.query;
@@ -125,6 +124,14 @@ app.get("/rooms/:roomId", (req, res) => {
       }
     });
 });
+app.post("/rooms/:id", (req, res) => {
+  const chatRoomRef = rtdb.ref(`/rooms/${req.params.id}/messages`);
+  chatRoomRef.on("value", snap => {
+    const data = snap.val();
+  });
+  chatRoomRef.push(req.body);
+});
+
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

@@ -1,14 +1,14 @@
 import { rtdb } from "./rtdb";
 import { map } from "lodash";
+import { connected } from "process";
 
 const API_BASE_URL = "http://localhost:3000";
 
-type Messages = {
+type Message = {
   from: string;
   message: string;
 };
 
-//TODO: CAMBIAR LOS FETCH PARA QUE LA DATA SE MANEJE DESDE AQUÍ
 const state = {
   data: {
     name: null,
@@ -39,8 +39,10 @@ const state = {
 
   setRoomId(roomId) {
     const cs = this.getState();
-    cs.roomId = roomId;
-    this.setState(cs);
+    if (roomId !== undefined) {
+      cs.roomId = roomId;
+      this.setState(cs);
+    }
   },
 
   setLongRoomId(longId) {
@@ -49,19 +51,14 @@ const state = {
     this.setState(cs);
   },
 
-  listenRoom(idRoom) {
-    const chatRoomRef = rtdb.ref(`/rooms/${idRoom}`);
-    chatRoomRef.on("value", snapshot => {
-      const cs = this.getState();
-      const messagesFromServer = snapshot.val();
-      const messagesList = map(messagesFromServer.messages);
-      cs.messages = messagesList;
-      this.setState(cs);
-    });
+  init() {
+    const lastStorageState = localStorage.getItem("state");
   },
 
-  // CREATEUSER NOS DEVUELVE EL ID DEL USUARIO
-  createUser() {
+  // OBTENEMOS EL ID DEL USUARIO EN FIRESTORE,
+  // PARA LUEGO CON ESE ID CREAR UNA ROOM EN LA RTDB,
+  // Y CREAR UNA ROOM EN FIRESTORE GUARDANDO EL RTDBID
+  createUser(callback?) {
     const cs = this.getState();
     if (cs.email) {
       fetch(`${API_BASE_URL}/signup`, {
@@ -77,12 +74,35 @@ const state = {
         .then(res => {
           cs.userId = res.id;
           this.setState(cs);
+          this.createRoom();
+          callback();
         });
     } else {
       alert("Debes colocar un mail.");
     }
   },
-  // AUTENTICA EL EMAIL Y RETORNA EL ID DEL USUARIO
+  createRoom() {
+    const cs = this.getState();
+    if (cs.userId) {
+      fetch(`${API_BASE_URL}/rooms`, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: cs.userId }),
+      })
+        .then(data => {
+          return data.json();
+        })
+        .then(res => {
+          if (cs.roomId == null) {
+            cs.roomId = res.id;
+            this.setState(cs);
+          }
+          this.connectToRoom();
+        });
+    }
+  },
   getAuth(email) {
     return fetch(`${API_BASE_URL}/auth`, {
       method: "post",
@@ -99,38 +119,38 @@ const state = {
       });
   },
 
-  createRoom() {
+  // RECIBIMOS EL ID DE LA RTDB PARA LUEGO PODER QUEDAR
+  // ESCUCHANDO SI UNA PERSONA ENVÍA MENSAJES
+  connectToRoom() {
     const cs = this.getState();
-    if (cs.userId) {
-      fetch(`${API_BASE_URL}/rooms`, {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: cs.userId }),
-      })
+    if (cs.roomId && cs.userId) {
+      fetch(`${API_BASE_URL}/rooms/${cs.roomId}?userId=${cs.userId}`)
         .then(data => {
           return data.json();
         })
         .then(res => {
-          cs.roomId = res.id;
+          cs.rtdbRoomId = res.rtdbId;
           this.setState(cs);
+          this.listenRoom();
         });
     }
   },
-  connectToRoom(roomId, userId) {
-    return fetch(`${API_BASE_URL}/rooms/${roomId}?userId=${userId}`)
-      .then(data => {
-        return data.json();
-      })
-      .then(res => {
-        return res;
-      });
+  listenRoom() {
+    const cs = this.getState();
+    const chatRoomRef = rtdb.ref(`/rooms/${cs.rtdbRoomId}/messages`);
+
+    chatRoomRef.on("value", snapshot => {
+      const currentState = this.getState();
+      const messagesFromServer = snapshot.val();
+      const messagesList = map(messagesFromServer.messages);
+      currentState.messages = messagesList;
+      this.setState(cs);
+    });
   },
 
   pushMessages(message: string) {
     const cs = this.getState();
-    fetch(`${API_BASE_URL}/messages`, {
+    fetch(`${API_BASE_URL}/rooms/${cs.rtdbRoomId}/messages`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -139,7 +159,13 @@ const state = {
         from: cs.name,
         message: message,
       }),
-    });
+    })
+      .then(res => {
+        return res.json();
+      })
+      .then(data => {
+        return data;
+      });
   },
 
   setState(newState) {
@@ -147,6 +173,7 @@ const state = {
     for (const cb of this.listeners) {
       cb();
     }
+    localStorage.setItem("state", JSON.stringify(newState));
     console.log("Soy el state, he cambiado", this.data);
   },
   suscribe(callback: (any) => any) {

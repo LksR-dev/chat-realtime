@@ -1,3 +1,4 @@
+import { Router } from "@vaadin/router";
 import { state } from "../../state";
 
 class Login extends HTMLElement {
@@ -36,12 +37,27 @@ class Login extends HTMLElement {
       const select = target.select.value;
       const idRoomInput = target.id.value;
 
-      //TODO: GUARDAR LOS DATOS EN EL STATE
       if (userEmail !== "" && userName !== "") {
         if (select == "newRoom") {
           state.setEmailAndName(userEmail, userName);
-          state.createUser();
-          state.createRoom();
+          // state.init();
+          const cs = state.getState();
+          if (cs.rtdbRoomId && cs.userId) {
+            Router.go("/chat");
+          } else {
+            state.createUser(() => {
+              Router.go("/chat");
+            });
+          }
+        }
+        if (select == "actualRoom") {
+          state.setEmailAndName(userEmail, userName);
+          const currentState = state.getState();
+          currentState.roomId = idRoomInput;
+          // state.init();
+          state.createUser(() => {
+            Router.go("/chat");
+          });
         }
       } else {
         alert("Debes completar todos los campos");
