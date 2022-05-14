@@ -58,7 +58,6 @@ class Chat extends HTMLElement {
     `;
 
     this.shadow.appendChild(homeDiv);
-    this.addListeners();
   }
 }
 customElements.define("chat-page", Chat);

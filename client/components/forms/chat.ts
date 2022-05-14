@@ -13,9 +13,7 @@ class PushMessages extends HTMLElement {
     super();
     this.shadow = this.attachShadow({ mode: "open" });
   }
-  addListeners() {}
-
-  connectedCallback() {
+  addListeners() {
     const form = this.shadow.querySelector(".form");
     form.addEventListener("submit", e => {
       e.preventDefault();
@@ -28,6 +26,9 @@ class PushMessages extends HTMLElement {
         alert("No podes mandar mensajes vacíos maquinola, no rompas.");
       }
     });
+  }
+
+  connectedCallback() {
     this.render();
   }
   render() {
