@@ -28,23 +28,23 @@ class Chat extends HTMLElement {
     `;
     this.shadow.appendChild(style);
   }
-  addListeners() {}
-
   connectedCallback() {
     state.suscribe(() => {
       const currentState = state.getState();
       this.messages = currentState.messages;
       this.render();
     });
+    this.render();
   }
   render() {
     const homeDiv = document.createElement("div");
     homeDiv.classList.add("container");
-    const cs = state.getState();
-    const roomId = cs.roomId;
 
+    console.log(this.messages);
+
+    const cs = state.getState();
     homeDiv.innerHTML = `
-      <text-custom weight="bold" size="30px">Chat: ${roomId}</text-custom>
+      <text-custom weight="bold" size="30px">Chat: ${cs.roomId}</text-custom>
     
       <div>
         <div class="messages">

@@ -137,7 +137,7 @@ const state = {
   },
   listenRoom() {
     const cs = this.getState();
-    const chatRoomRef = rtdb.ref(`/rooms/${cs.rtdbRoomId}/messages`);
+    const chatRoomRef = rtdb.ref(`/rooms/${cs.rtdbRoomId}`);
 
     chatRoomRef.on("value", snapshot => {
       const currentState = this.getState();
@@ -149,8 +149,12 @@ const state = {
   },
 
   pushMessages(message: string) {
+    console.log(message, "el mensaje entra a la funcion");
+
     const cs = this.getState();
-    fetch(`${API_BASE_URL}/rooms/${cs.rtdbRoomId}/messages`, {
+    console.log(cs.messages, "el cs.msg del state");
+
+    fetch(`${API_BASE_URL}/rooms/${cs.rtdbRoomId}`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",

@@ -125,11 +125,12 @@ app.get("/rooms/:roomId", (req, res) => {
     });
 });
 app.post("/rooms/:id", (req, res) => {
+  console.log(req.params.id);
+
   const chatRoomRef = rtdb.ref(`/rooms/${req.params.id}/messages`);
-  chatRoomRef.on("value", snap => {
-    const data = snap.val();
+  chatRoomRef.push(req.body, () => {
+    res.json(req.body);
   });
-  chatRoomRef.push(req.body);
 });
 
 const port = process.env.PORT || 3000;

@@ -18,13 +18,9 @@ class PushMessages extends HTMLElement {
     form.addEventListener("submit", e => {
       e.preventDefault();
       const target = e.target as any;
-      let newMsg = target.msg.value;
+      console.log(target["msg"].value, "el mensaje que entra desde el form");
 
-      if (newMsg.trim() !== "") {
-        state.pushMessages(newMsg);
-      } else {
-        alert("No podes mandar mensajes vacíos maquinola, no rompas.");
-      }
+      state.pushMessages(target["msg"].value);
     });
   }
 
@@ -66,6 +62,7 @@ class PushMessages extends HTMLElement {
     `;
 
     this.shadow.appendChild(style);
+    this.addListeners();
   }
 }
 customElements.define("chat-form", PushMessages);
