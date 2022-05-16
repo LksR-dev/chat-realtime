@@ -52,12 +52,19 @@ class Login extends HTMLElement {
         }
         if (select == "actualRoom") {
           state.setEmailAndName(userEmail, userName);
-          const currentState = state.getState();
-          currentState.roomId = idRoomInput;
           // state.init();
-          state.createUser(() => {
-            Router.go("/chat");
-          });
+          const currentState = state.getState();
+          if (idRoomInput !== "") {
+            currentState.roomId = idRoomInput;
+
+            if (currentState.rtdbRoomId && currentState.userId) {
+              Router.go("/chat");
+            } else {
+              state.createUser(() => {
+                Router.go("/chat");
+              });
+            }
+          }
         }
       } else {
         alert("Debes completar todos los campos");

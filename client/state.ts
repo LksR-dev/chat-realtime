@@ -74,14 +74,13 @@ const state = {
         .then(res => {
           cs.userId = res.id;
           this.setState(cs);
-          this.createRoom();
-          callback();
+          this.createRoom(callback);
         });
     } else {
       alert("Debes colocar un mail.");
     }
   },
-  createRoom() {
+  createRoom(callback?) {
     const cs = this.getState();
     if (cs.userId) {
       fetch(`${API_BASE_URL}/rooms`, {
@@ -96,10 +95,11 @@ const state = {
         })
         .then(res => {
           if (cs.roomId == null) {
-            cs.roomId = res.id;
+            cs.roomId = res.id.toString();
             this.setState(cs);
           }
           this.connectToRoom();
+          callback();
         });
     }
   },
@@ -149,11 +149,7 @@ const state = {
   },
 
   pushMessages(message: string) {
-    console.log(message, "el mensaje entra a la funcion");
-
     const cs = this.getState();
-    console.log(cs.messages, "el cs.msg del state");
-
     fetch(`${API_BASE_URL}/rooms/${cs.rtdbRoomId}`, {
       method: "post",
       headers: {

@@ -23,24 +23,32 @@ class Chat extends HTMLElement {
       }
       .messages {
         width: 100%;
-        height: 200px;
+        height: 280px;
       }
     `;
     this.shadow.appendChild(style);
   }
   connectedCallback() {
     state.suscribe(() => {
-      const currentState = state.getState();
-      this.messages = currentState.messages;
-      this.render();
+      const cs = state.getState();
+      if (
+        cs.roomId !== "" &&
+        cs.messages.length != 0 &&
+        this.messages.length < cs.messages.length
+      ) {
+        this.messages = cs.messages;
+        this.messages.shift();
+        this.shadow.lastChild.remove();
+        this.render();
+      }
     });
+    const cs = state.getState();
+    this.messages = cs.messages;
     this.render();
   }
   render() {
     const homeDiv = document.createElement("div");
     homeDiv.classList.add("container");
-
-    console.log(this.messages);
 
     const cs = state.getState();
     homeDiv.innerHTML = `
@@ -48,9 +56,11 @@ class Chat extends HTMLElement {
     
       <div>
         <div class="messages">
-          ${this.messages.map(m => {
-            return `<div class="message">${m.from}:${m.message}</div>`;
-          })}
+          ${this.messages
+            .map(m => {
+              return `<div class="message">${m.from}:${m.message}</div>`;
+            })
+            .join("")}
         </div>
       </div>
 

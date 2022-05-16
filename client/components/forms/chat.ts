@@ -18,7 +18,6 @@ class PushMessages extends HTMLElement {
     form.addEventListener("submit", e => {
       e.preventDefault();
       const target = e.target as any;
-      console.log(target["msg"].value, "el mensaje que entra desde el form");
 
       state.pushMessages(target["msg"].value);
     });
@@ -37,7 +36,6 @@ class PushMessages extends HTMLElement {
 
       .input {
         height: 30px;
-        margin-bottom: 15px;
       }
 
       .btn {
@@ -45,7 +43,7 @@ class PushMessages extends HTMLElement {
         border-style: none;
         border-radius: 4px;
         height: 40px;
-        margin-top: 20px;
+        margin-top: 5px;
       }
       .btn:hover {
         cursor: pointer;

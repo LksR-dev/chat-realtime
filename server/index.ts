@@ -33,9 +33,9 @@ app.post("/signup", (req, res) => {
             });
           });
       } else {
-        res.status(400).json({
+        res.status(200).json({
           id: snap.docs[0].id,
-          message: "Este email ya se encuentra en uso.",
+          message: "Email existente",
         });
       }
     });
