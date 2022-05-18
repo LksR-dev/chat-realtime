@@ -1,5 +1,5 @@
-const express = require("express");
-import cors from "cors";
+import * as express from "express";
+import * as cors from "cors";
 import { firestore, rtdb } from "./db";
 import { nanoid } from "nanoid";
 
