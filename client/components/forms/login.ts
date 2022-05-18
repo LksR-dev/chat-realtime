@@ -40,7 +40,6 @@ class Login extends HTMLElement {
       if (userEmail !== "" && userName !== "") {
         if (select == "newRoom") {
           state.setEmailAndName(userEmail, userName);
-          // state.init();
           const cs = state.getState();
           if (cs.rtdbRoomId && cs.userId) {
             Router.go("/chat");
@@ -51,7 +50,6 @@ class Login extends HTMLElement {
           }
         }
         if (select == "actualRoom") {
-          // state.init();
           const currentState = state.getState();
           if (idRoomInput !== "") {
             state.setEmailAndName(userEmail, userName);

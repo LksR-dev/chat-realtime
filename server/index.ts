@@ -11,6 +11,12 @@ app.use(cors());
 const userColl = firestore.collection("users");
 const roomsColl = firestore.collection("rooms");
 
+app.get("/env", (req, res) => {
+  res.json({
+    environment: process.env.NODE_ENV,
+  });
+});
+
 // CREAMOS EL USUARIO DEVOLVIENDO SU IDDOC
 app.post("/signup", (req, res) => {
   const { name } = req.body;

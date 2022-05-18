@@ -1,12 +1,7 @@
 import { rtdb } from "./rtdb";
 import { map } from "lodash";
 
-const API_BASE_URL = "http://localhost:3000";
-
-type Message = {
-  from: string;
-  message: string;
-};
+const API_BASE_URL = "https://chatapp-realtime-dwfm6.herokuapp.com/";
 
 const state = {
   data: {
@@ -49,11 +44,6 @@ const state = {
     cs.rtdbRoomId = longId;
     this.setState(cs);
   },
-
-  init() {
-    const lastStorageState = localStorage.getItem("state");
-  },
-
   // OBTENEMOS EL ID DEL USUARIO EN FIRESTORE,
   // PARA LUEGO CON ESE ID CREAR UNA ROOM EN LA RTDB,
   // Y CREAR UNA ROOM EN FIRESTORE GUARDANDO EL RTDBID
@@ -207,7 +197,7 @@ const state = {
       cb();
     }
     localStorage.setItem("state", JSON.stringify(newState));
-    console.log("Soy el state, he cambiado", this.data);
+    // console.log("Soy el state, he cambiado", this.data);
   },
   suscribe(callback: (any) => any) {
     this.listeners.push(callback);
