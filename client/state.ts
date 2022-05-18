@@ -1,6 +1,5 @@
 import { rtdb } from "./rtdb";
 import { map } from "lodash";
-import { connected } from "process";
 
 const API_BASE_URL = "http://localhost:3000";
 
@@ -131,6 +130,7 @@ const state = {
       .then(res => {
         if (res.id) {
           cs.roomId = res.id;
+          return res;
         } else {
           return res.message;
         }

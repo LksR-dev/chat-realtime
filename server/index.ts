@@ -62,7 +62,6 @@ app.post("/auth/users", (req, res) => {
 });
 app.post("/auth/rooms", (req, res) => {
   const { id } = req.body;
-  console.log(roomsColl.doc());
 
   roomsColl
     .doc(id.toString())
@@ -145,8 +144,6 @@ app.get("/rooms/:roomId", (req, res) => {
     });
 });
 app.post("/rooms/:id", (req, res) => {
-  console.log(req.params.id);
-
   const chatRoomRef = rtdb.ref(`/rooms/${req.params.id}/messages`);
   chatRoomRef.push(req.body, () => {
     res.json(req.body);

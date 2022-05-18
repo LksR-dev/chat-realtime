@@ -39,7 +39,7 @@ class PushMessages extends HTMLElement {
       }
 
       .btn {
-        background-color: #465c88;
+        background-color: #575da9;
         border-style: none;
         border-radius: 4px;
         height: 40px;

@@ -21,9 +21,18 @@ class Chat extends HTMLElement {
       h1 {
         margin: 0 auto;
       }
-      .messages {
+      .chat {
         width: 100%;
         height: 280px;
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+      }
+      .bubble__owner {
+        margin: 0 0 2px auto;
+      }
+      .bubble__guest {
+        margin-bottom: 2px;
       }
     `;
     this.shadow.appendChild(style);
@@ -47,27 +56,50 @@ class Chat extends HTMLElement {
     this.render();
   }
   render() {
-    const homeDiv = document.createElement("div");
-    homeDiv.classList.add("container");
+    const chatSection = document.createElement("div");
+    chatSection.classList.add("container");
 
     const cs = state.getState();
-    homeDiv.innerHTML = `
+    chatSection.innerHTML = `
       <text-custom weight="bold" size="30px">Chat: ${cs.roomId}</text-custom>
-    
-      <div>
-        <div class="messages">
-          ${this.messages
-            .map(m => {
-              return `<div class="message">${m.from}:${m.message}</div>`;
-            })
-            .join("")}
-        </div>
-      </div>
+
+      <div class="chat"></div>
 
       <chat-form></chat-form>
     `;
 
-    this.shadow.appendChild(homeDiv);
+    const chat = chatSection.querySelector(".chat");
+    function createBubble(messages: Message[]) {
+      for (const message of messages) {
+        console.log(message);
+
+        const cs = state.getState();
+        const bubble = document.createElement("div");
+
+        if (message.from === cs.name) {
+          bubble.innerHTML = `
+            <user-bubble username="${message.from}" text="${message.message}" color="#7a9d96" textalign="right"></user-bubble>
+          `;
+          bubble.className = "bubble__owner";
+          chat.appendChild(bubble);
+        }
+        if (message.from !== cs.name) {
+          bubble.innerHTML = `
+            <user-bubble username="${message.from}" text="${message.message}" color="#cae4db" textalign="left"></user-bubble>
+          `;
+          bubble.className = "bubble__guest";
+          chat.appendChild(bubble);
+        }
+      }
+    }
+    createBubble(this.messages);
+    chat.scrollTo({
+      top: 1000,
+      left: 0,
+      behavior: "auto",
+    });
+
+    this.shadow.appendChild(chatSection);
   }
 }
 customElements.define("chat-page", Chat);
