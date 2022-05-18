@@ -58,7 +58,7 @@ const state = {
   // OBTENEMOS EL ID DEL USUARIO EN FIRESTORE,
   // PARA LUEGO CON ESE ID CREAR UNA ROOM EN LA RTDB,
   // Y CREAR UNA ROOM EN FIRESTORE GUARDANDO EL RTDBID
-  createUser(callback?) {
+  createUser(callback?, idRoomInput?) {
     const cs = this.getState();
     if (cs.email) {
       fetch(`${API_BASE_URL}/signup`, {
@@ -74,7 +74,19 @@ const state = {
         .then(res => {
           cs.userId = res.id;
           this.setState(cs);
-          this.createRoom(callback);
+
+          if (idRoomInput) {
+            this.authRoomId(idRoomInput).then(data => {
+              if (!data.id) {
+                alert(data);
+              } else {
+                this.connectToRoom();
+                callback();
+              }
+            });
+          } else {
+            this.createRoom(callback);
+          }
         });
     } else {
       alert("Debes colocar un mail.");
@@ -102,6 +114,27 @@ const state = {
           callback();
         });
     }
+  },
+  authRoomId(roomIdInput) {
+    const cs = this.getState();
+
+    return fetch(`${API_BASE_URL}/auth/rooms`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: roomIdInput }),
+    })
+      .then(data => {
+        return data.json();
+      })
+      .then(res => {
+        if (res.id) {
+          cs.roomId = res.id;
+        } else {
+          return res.message;
+        }
+      });
   },
   getAuth(email) {
     return fetch(`${API_BASE_URL}/auth`, {

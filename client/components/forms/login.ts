@@ -51,18 +51,17 @@ class Login extends HTMLElement {
           }
         }
         if (select == "actualRoom") {
-          state.setEmailAndName(userEmail, userName);
           // state.init();
           const currentState = state.getState();
           if (idRoomInput !== "") {
-            currentState.roomId = idRoomInput;
+            state.setEmailAndName(userEmail, userName);
 
             if (currentState.rtdbRoomId && currentState.userId) {
               Router.go("/chat");
             } else {
               state.createUser(() => {
                 Router.go("/chat");
-              });
+              }, idRoomInput);
             }
           }
         }

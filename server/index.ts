@@ -42,7 +42,7 @@ app.post("/signup", (req, res) => {
 });
 
 // AUTH
-app.post("/auth", (req, res) => {
+app.post("/auth/users", (req, res) => {
   const { email } = req.body;
 
   userColl
@@ -56,6 +56,26 @@ app.post("/auth", (req, res) => {
       } else {
         res.status(200).json({
           id: resQ.docs[0].id,
+        });
+      }
+    });
+});
+app.post("/auth/rooms", (req, res) => {
+  const { id } = req.body;
+  console.log(roomsColl.doc());
+
+  roomsColl
+    .doc(id.toString())
+    .get()
+    .then(doc => {
+      if (doc.exists) {
+        res.status(200).json({
+          id: doc.id,
+          message: "Sala encontrada.",
+        });
+      } else {
+        res.status(400).json({
+          message: `La sala ${id} no existe, por favor, ingrese un ID válido.`,
         });
       }
     });
