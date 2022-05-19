@@ -158,14 +158,13 @@ app.post("/rooms/:id", (req, res) => {
   });
 });
 
-const relativeRoute = path.resolve(__dirname, "../dist", "index.html");
-const dist = path.resolve(__dirname, "../dist");
+const relativeRoute = path.resolve(__dirname, "../dist");
 
+app.use(express.static(relativeRoute));
 app.get("*", (req, res) => {
   res.sendFile(relativeRoute);
 });
 
-app.use(express.static(dist));
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
