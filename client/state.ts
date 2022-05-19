@@ -1,7 +1,7 @@
 import { rtdb } from "./rtdb";
 import { map } from "lodash";
 
-const API_BASE_URL = "https://chatapp-realtime-dwfm6.herokuapp.com/";
+const API_BASE_URL = "https://chatapp-realtime-dwfm6.herokuapp.com";
 
 const state = {
   data: {
