@@ -1,4 +1,5 @@
 import * as express from "express";
+import "dotenv/config";
 import * as cors from "cors";
 import * as path from "path";
 import { firestore, rtdb } from "./db";
@@ -10,7 +11,6 @@ const app = express();
 const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
-
 
 const userColl = firestore.collection("users");
 const roomsColl = firestore.collection("rooms");
