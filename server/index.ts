@@ -1,10 +1,8 @@
 import * as express from "express";
-import "dotenv/config";
 import * as cors from "cors";
 import * as path from "path";
 import { firestore, rtdb } from "./db";
 import { nanoid } from "nanoid";
-import { relative } from "path/posix";
 
 // INIT APP AND CFG
 const app = express();
@@ -161,12 +159,12 @@ app.post("/rooms/:id", (req, res) => {
 });
 
 const relativeRoute = path.resolve(__dirname, "../dist");
-app.use(express.static(relativeRoute));
 
 app.get("*", (req, res) => {
   res.sendFile(relativeRoute + "/index.html");
 });
 
+app.use(express.static(relativeRoute));
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
