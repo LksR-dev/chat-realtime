@@ -1,12 +1,15 @@
 import * as express from "express";
 import * as cors from "cors";
+import * as path from "path";
 import { firestore, rtdb } from "./db";
 import { nanoid } from "nanoid";
 
 // INIT APP AND CFG
 const app = express();
+const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
+
 
 const userColl = firestore.collection("users");
 const roomsColl = firestore.collection("rooms");
@@ -158,11 +161,11 @@ app.post("/rooms/:id", (req, res) => {
 
 app.use(express.static("dist"));
 
+const relativeRoute = path.resolve(__dirname, "/dist", "index.html");
 app.get("*", (req, res) => {
-  res.sendFile(__dirname + "/dist/index.html");
+  relativeRoute;
 });
 
-const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
