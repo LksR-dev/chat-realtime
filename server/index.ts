@@ -165,7 +165,7 @@ app.get("*", (req, res) => {
   res.sendFile(relativeRoute);
 });
 
-app.use(express.static(relativeRoute));
+app.use(express.static(dist));
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
