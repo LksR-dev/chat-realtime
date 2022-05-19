@@ -162,7 +162,7 @@ const relativeRoute = path.resolve(__dirname, "../dist", "index.html");
 const dist = path.resolve(__dirname, "../dist");
 
 app.get("*", (req, res) => {
-  relativeRoute;
+  res.sendFile(relativeRoute);
 });
 
 app.use(express.static(dist));
