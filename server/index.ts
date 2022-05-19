@@ -161,7 +161,7 @@ app.post("/rooms/:id", (req, res) => {
 const relativeRoute = path.resolve(__dirname, "../dist", "index.html");
 
 app.get("*", (req, res) => {
-  res.sendFile(relativeRoute);
+  relativeRoute;
 });
 
 app.use(express.static("dist"));
