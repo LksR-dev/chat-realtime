@@ -23,10 +23,20 @@ class Chat extends HTMLElement {
       }
       .chat {
         width: 100%;
-        height: 280px;
+        height: 250px;
         display: flex;
         flex-direction: column;
         overflow: auto;
+      }
+      @media only screen and (min-width: 360px) {
+        .chat {
+          height: 340px
+        }
+      }
+      @media only screen and (min-width: 414px) {
+        .chat {
+          height: 440px
+        }
       }
       .bubble__owner {
         margin: 0 0 2px auto;
@@ -49,6 +59,7 @@ class Chat extends HTMLElement {
         this.messages.shift();
         this.shadow.lastChild.remove();
         this.render();
+        window.scrollTo(0, document.body.scrollHeight);
       }
     });
     const cs = state.getState();
@@ -58,12 +69,27 @@ class Chat extends HTMLElement {
   render() {
     const chatSection = document.createElement("div");
     chatSection.classList.add("container");
+    const bubbles = [];
+    for (const message of this.messages) {
+      const cs = state.getState();
+      if (message.from === cs.name) {
+        bubbles.push(
+          `<user-bubble username="${message.from}" text="${message.message}" color="#7a9d96" textalign="right"></user-bubble>`
+        );
+      } else {
+        bubbles.push(`
+            <user-bubble username="${message.from}" text="${message.message}" color="#cae4db" textalign="left"></user-bubble>
+          `);
+      }
+    }
 
     const cs = state.getState();
     chatSection.innerHTML = `
       <text-custom weight="bold" size="30px">Chat: ${cs.roomId}</text-custom>
 
-      <div class="chat"></div>
+      <div class="chat">
+        
+      </div>
 
       <chat-form></chat-form>
     `;
@@ -93,11 +119,6 @@ class Chat extends HTMLElement {
       }
     }
     createBubble(this.messages);
-    chat.scrollTo({
-      top: 1000,
-      left: 0,
-      behavior: "auto",
-    });
 
     this.shadow.appendChild(chatSection);
   }

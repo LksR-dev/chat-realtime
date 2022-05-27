@@ -52,7 +52,7 @@ class PushMessages extends HTMLElement {
 
     this.shadow.innerHTML = `
       <form class="form">
-        <input class="input" type="text" name="msg" placeholder="Hey There! Im ussing WhatsGram" require>
+        <input autofocus class="input" type="text" name="msg" placeholder="Hey There! Im ussing WhatsGram" require>
         <button class="btn">
           <text-custom weight="bold" size="20px">Enviar</text-custom>
         </button>
