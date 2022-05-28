@@ -197,7 +197,6 @@ const state = {
       cb();
     }
     localStorage.setItem("state", JSON.stringify(newState));
-    console.log("Soy el state, he cambiado", this.data);
   },
   suscribe(callback: (any) => any) {
     this.listeners.push(callback);
