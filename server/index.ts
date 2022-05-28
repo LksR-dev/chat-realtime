@@ -162,7 +162,7 @@ const relativeRoute = path.resolve(__dirname, "../dist");
 
 app.use(express.static(relativeRoute));
 app.get("*", (req, res) => {
-  res.sendFile(relativeRoute);
+  res.sendFile(relativeRoute, +"/index.html");
 });
 
 app.listen(port, () => {
