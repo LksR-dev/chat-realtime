@@ -93,7 +93,7 @@ class Chat extends HTMLElement {
       ${bubbles.join("")}
       </div>
 
-      <chat-form class="form__chat"></chat-form>
+      <chat-form></chat-form>
     `;
 
     this.shadow.appendChild(chatSection);
