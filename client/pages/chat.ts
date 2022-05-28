@@ -23,21 +23,23 @@ class Chat extends HTMLElement {
       }
       .chat {
         width: 100%;
-        height: 250px;
+        height: 200px;
         display: flex;
         flex-direction: column;
         overflow: auto;
       }
-      @media only screen and (min-width: 360px) {
+      
+      @media only screen and (min-width: 375px) {
         .chat {
-          height: 340px
+          height: 300px;
         }
       }
-      @media only screen and (min-width: 414px) {
+      @media only screen and (min-width: 480px) {
         .chat {
-          height: 440px
+          height: 300px;
         }
       }
+
       .bubble__owner {
         margin: 0 0 2px auto;
       }
@@ -91,7 +93,7 @@ class Chat extends HTMLElement {
       ${bubbles.join("")}
       </div>
 
-      <chat-form></chat-form>
+      <chat-form class="form__chat"></chat-form>
     `;
 
     this.shadow.appendChild(chatSection);
