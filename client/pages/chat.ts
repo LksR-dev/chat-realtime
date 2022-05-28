@@ -59,7 +59,6 @@ class Chat extends HTMLElement {
         this.messages.shift();
         this.shadow.lastChild.remove();
         this.render();
-        window.scrollTo(0, document.body.scrollHeight);
       }
     });
     const cs = state.getState();
@@ -69,16 +68,17 @@ class Chat extends HTMLElement {
   render() {
     const chatSection = document.createElement("div");
     chatSection.classList.add("container");
+
     const bubbles = [];
     for (const message of this.messages) {
       const cs = state.getState();
       if (message.from === cs.name) {
         bubbles.push(
-          `<user-bubble username="${message.from}" text="${message.message}" color="#7a9d96" textalign="right"></user-bubble>`
+          `<user-bubble class="bubble__owner" username="${message.from}" text="${message.message}" color="#7a9d96" textalign="right"></user-bubble>`
         );
       } else {
         bubbles.push(`
-            <user-bubble username="${message.from}" text="${message.message}" color="#cae4db" textalign="left"></user-bubble>
+            <user-bubble class="bubble__guest" username="${message.from}" text="${message.message}" color="#cae4db" textalign="left"></user-bubble>
           `);
       }
     }
@@ -88,39 +88,19 @@ class Chat extends HTMLElement {
       <text-custom weight="bold" size="30px">Chat: ${cs.roomId}</text-custom>
 
       <div class="chat">
-        
+      ${bubbles.join("")}
       </div>
 
       <chat-form></chat-form>
     `;
 
-    const chat = chatSection.querySelector(".chat");
-    function createBubble(messages: Message[]) {
-      for (const message of messages) {
-        console.log(message);
-
-        const cs = state.getState();
-        const bubble = document.createElement("div");
-
-        if (message.from === cs.name) {
-          bubble.innerHTML = `
-            <user-bubble username="${message.from}" text="${message.message}" color="#7a9d96" textalign="right"></user-bubble>
-          `;
-          bubble.className = "bubble__owner";
-          chat.appendChild(bubble);
-        }
-        if (message.from !== cs.name) {
-          bubble.innerHTML = `
-            <user-bubble username="${message.from}" text="${message.message}" color="#cae4db" textalign="left"></user-bubble>
-          `;
-          bubble.className = "bubble__guest";
-          chat.appendChild(bubble);
-        }
-      }
-    }
-    createBubble(this.messages);
-
     this.shadow.appendChild(chatSection);
+    const chat = chatSection.querySelector(".chat");
+    chat.scrollTo({
+      top: 1000,
+      left: 0,
+      behavior: "auto",
+    });
   }
 }
 customElements.define("chat-page", Chat);

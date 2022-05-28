@@ -15,18 +15,20 @@ class UserMessage extends HTMLElement {
     const style = document.createElement("style");
     style.textContent = `
     .bubble{
-      max-width: 200px;
+      width: max-content;
+      max-width: 100px;
       border-radius: 5px;
       background-color: ${color};
-      padding: 5px;
+      padding: 8px;
     }
     .message-text{
       text-align: ${textalign};
+      word-break: break-word;
     }
     
     .username{
-      display: block;
       text-align: ${textalign};
+      word-break: break-word;
       }
     `;
 
@@ -34,9 +36,7 @@ class UserMessage extends HTMLElement {
     div.classList.add("bubble");
     div.innerHTML = `
       <text-custom class="username" weight="bold" size="16px">${userName}</text-custom>
-      <div>
-        <text-custom class="message-text" weight="400" size="16px">${text}</text-custom>
-      </div>
+      <text-custom class="message-text" weight="400" size="16px">${text}</text-custom>
     `;
 
     shadow.appendChild(style);
