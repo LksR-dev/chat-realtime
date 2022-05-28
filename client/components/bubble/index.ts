@@ -16,7 +16,7 @@ class UserMessage extends HTMLElement {
     style.textContent = `
     .bubble{
       width: max-content;
-      max-width: 100px;
+      max-width: 250px;
       border-radius: 5px;
       background-color: ${color};
       padding: 8px;
